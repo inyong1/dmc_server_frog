@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs
 
+import 'dart:io';
+
 import 'package:mysql_client/mysql_client.dart';
 
 class QueryParam {
@@ -27,9 +29,9 @@ class AppDatabase {
     _conn = await MySQLConnection.createConnection(
       host: 'localhost',
       port: 3306,
-      userName: 'phpmyadmin',
-      password: 'admin',
-      databaseName: 'dmc', // optional
+      userName: Platform.environment['DB_USER'] ?? 'user',
+      password: Platform.environment['DB_PASSWORD'] ?? 'pass',
+      databaseName: Platform.environment['DB_NAME'] ?? 'db', // optional
       // secure: true,
     );
 
