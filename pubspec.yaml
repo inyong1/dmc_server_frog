@@ -9,13 +9,10 @@ environment:
 dependencies:
   crypto: ^3.0.3
   dart_frog: ^1.0.0
-  mysql_client:
-    # git:
-    #   url: https://github.com/zim32/mysql.dart.git
-    #   ref: logging
+  mysql_client: null
+  shelf_cors_headers: ^0.1.5
   uuid: ^3.0.7
 
 dev_dependencies:
   mocktail: ^0.3.0
   test: ^1.19.2
-  very_good_analysis: ^5.0.0

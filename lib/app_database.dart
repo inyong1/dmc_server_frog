@@ -32,7 +32,7 @@ class AppDatabase {
       userName: Platform.environment['DB_USER'] ?? 'user',
       password: Platform.environment['DB_PASSWORD'] ?? 'pass',
       databaseName: Platform.environment['DB_NAME'] ?? 'db', // optional
-      // secure: true,
+      secure: false,
     );
 
 // actually connect to database
