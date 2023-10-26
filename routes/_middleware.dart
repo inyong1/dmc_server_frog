@@ -7,7 +7,7 @@ Handler middleware(Handler handler) {
     /// before
     final response = handler
         .use(provider<AppDatabase>((c) => AppDatabase.instance))
-        .use(requestLogger())
+        // .use(requestLogger())
         .use(
           fromShelfMiddleware(
             cors.corsHeaders(

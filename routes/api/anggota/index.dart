@@ -72,6 +72,7 @@ Future<Response> _onPost(RequestContext context) async {
   final levelWilayah = formData.fields['levelwilayah'] ?? '';
   final alamat = formData.fields['alamat'] ?? '';
   final ukuranBaju = formData.fields['ukuranbaju'] ?? '';
+  final hp = formData.fields['hp'] ?? '';
 
   // ignore: omit_local_variable_types
   final List<int>? ktpBytes = await formData.files['ktp']?.readAsBytes();
@@ -93,9 +94,9 @@ Future<Response> _onPost(RequestContext context) async {
   final db = context.read<AppDatabase>();
 
   var sql =
-      'INSERT INTO anggota(barcode,namaanggota,idkabupaten, idkecamatan,tempattanggallahir,level,levelwilayah,jabatan, alamat, ukuranbaju)';
+      'INSERT INTO anggota(barcode,namaanggota,idkabupaten, idkecamatan,tempattanggallahir,level,levelwilayah,jabatan, alamat, ukuranbaju, hp)';
   sql +=
-      'VALUES(:barcode,:namaanggota,:idkabupaten,:idkecamatan,:tempattanggallahir,:level,:levelwilayah,:jabatan,:alamat,:ukuranbaju)';
+      'VALUES(:barcode,:namaanggota,:idkabupaten,:idkecamatan,:tempattanggallahir,:level,:levelwilayah,:jabatan,:alamat,:ukuranbaju, :hp)';
   var params = {
     'barcode': barcode,
     'namaanggota': nama,
@@ -107,6 +108,7 @@ Future<Response> _onPost(RequestContext context) async {
     'levelwilayah': levelWilayah,
     'alamat': alamat,
     'ukuranbaju': ukuranBaju,
+    'hp': hp,
   };
   final result = await db.executeQuery(QueryParam(query: sql, params: params));
 

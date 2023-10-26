@@ -1,22 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
 
-Response onRequest(RequestContext context) {
-  const html = '''
-<html>
-<body>
-<center>
-<h1>
-404 not found
-</h1>
-<center>
-</body>
-</html>
-''';
-  return Response(
-    statusCode: HttpStatus.notFound,
-    body: html,
-    headers: {'Content-Type': 'text/html'},
-  );
+Future<Response> onRequest(RequestContext context) async {
+  final str = await File('./public/index.html').readAsString();
+  return Response.bytes(body: utf8.encode(str), headers: {
+    HttpHeaders.contentTypeHeader: 'text/html; charset=utf-8',
+  });
 }
