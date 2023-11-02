@@ -5,6 +5,11 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Attach to dart",
+            "request": "attach",
+            "type": "dart",
+        },
+        {
             "name": "dmc_server_frog",
             "type": "dart",
             "request": "launch",

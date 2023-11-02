@@ -29,9 +29,9 @@ class AppDatabase {
     _conn = await MySQLConnection.createConnection(
       host: 'localhost',
       port: 3306,
-      userName: Platform.environment['DB_USER'] ?? 'user',
-      password: Platform.environment['DB_PASSWORD'] ?? 'pass',
-      databaseName: Platform.environment['DB_NAME'] ?? 'db', // optional
+      userName: Platform.environment['DB_USER'] ?? 'dbuser',
+      password: Platform.environment['DB_PASSWORD'] ?? 'dbpw',
+      databaseName: Platform.environment['DB_NAME'] ?? 'heisgid_dmc', // optional
       secure: false,
     );
 
