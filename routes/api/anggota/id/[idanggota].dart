@@ -19,10 +19,12 @@ Future<Response> onGetAnggotaById(
   final db = context.read<AppDatabase>();
 
   var sql =
-      'select a.*, b.kecamatan, b.kota, b.kodepropinsi, b.kodekota, b.kodekecamatan';
+      'select a.*, b.kecamatan, b.kota, b.kodepropinsi, b.kodekota, b.kodekecamatan,c.kelurahan';
   sql += ' FROM anggota a';
   sql +=
       ' LEFT JOIN masterkecamatan b ON a.idkecamatan = b.idkecamatan AND a.idkabupaten = b.idkota';
+  sql +=
+      ' LEFT JOIN masterkelurahan c ON a.idkelurahan = c.idkelurahan';
   sql += ' WHERE a.idanggota = :idanggota LIMIT 1';
   final result = await db.executeQuery(
     QueryParam(query: sql, params: {'idanggota': idanggota}),

@@ -7,7 +7,7 @@ import 'package:mysql_client/mysql_client.dart';
 class QueryParam {
   QueryParam({required this.query, this.params});
   final String query;
-  final Map<String, String>? params;
+  final Map<String, String?>? params;
 }
 
 ///Database yang terhubung ke mysql

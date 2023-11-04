@@ -25,9 +25,12 @@ Future<Response> _onGet(RequestContext context) async {
 
   final db = context.read<AppDatabase>();
 
-  var sql = 'select a.namaanggota, a.idanggota, a.foto, a.level';
+  var sql =
+      'select a.namaanggota, a.idanggota, a.foto, a.level, b.kota, b.kecamatan, c.kelurahan';
   sql += ' FROM anggota a';
-  sql += ' WHERE a.statuskeaktifan = 1 AND a.namaanggota LIKE :search';
+  sql += ' LEFT JOIN masterkecamatan b ON a.idkecamatan = b.idkecamatan';
+  sql += ' LEFT JOIN masterkelurahan c ON a.idkelurahan = c.idkelurahan';
+  sql += ' WHERE a.statuskeaktifan > 0 AND a.namaanggota LIKE :search';
   final result0 = await db.executeQuery(
     QueryParam(query: sql, params: {'search': '%$search%'}),
   );
@@ -73,6 +76,9 @@ Future<Response> _onPost(RequestContext context) async {
   final alamat = formData.fields['alamat'] ?? '';
   final ukuranBaju = formData.fields['ukuranbaju'] ?? '';
   final hp = formData.fields['hp'] ?? '';
+  final idkelurahan = formData.fields['idkelurahan'] ?? '';
+  final hobi = formData.fields['hobi'] ?? '';
+  final usaha = formData.fields['usaha'] ?? '';
 
   // ignore: omit_local_variable_types
   final List<int>? ktpBytes = await formData.files['ktp']?.readAsBytes();
@@ -93,10 +99,10 @@ Future<Response> _onPost(RequestContext context) async {
 
   final db = context.read<AppDatabase>();
 
-  var sql =
-      'INSERT INTO anggota(barcode,namaanggota,idkabupaten, idkecamatan,tempattanggallahir,level,levelwilayah,jabatan, alamat, ukuranbaju, hp)';
-  sql +=
-      'VALUES(:barcode,:namaanggota,:idkabupaten,:idkecamatan,:tempattanggallahir,:level,:levelwilayah,:jabatan,:alamat,:ukuranbaju, :hp)';
+  var sqlInto =
+      'INSERT INTO anggota(barcode,namaanggota,idkabupaten, idkecamatan,tempattanggallahir,level,levelwilayah,jabatan, alamat, ukuranbaju, hp, hobi, usaha';
+  var sqlValues =
+      'VALUES(:barcode,:namaanggota,:idkabupaten,:idkecamatan,:tempattanggallahir,:level,:levelwilayah,:jabatan,:alamat,:ukuranbaju, :hp, :hobi, :usaha';
   var params = {
     'barcode': barcode,
     'namaanggota': nama,
@@ -109,8 +115,19 @@ Future<Response> _onPost(RequestContext context) async {
     'alamat': alamat,
     'ukuranbaju': ukuranBaju,
     'hp': hp,
+    'hobi': hobi,
+    'usaha': usaha,
   };
-  final result = await db.executeQuery(QueryParam(query: sql, params: params));
+  if (idkelurahan.isNotEmpty) {
+    sqlInto += ',idkelurahan';
+    sqlValues += ',:idkelurahan';
+    params['idkelurahan'] = idkelurahan;
+  }
+  sqlInto += ')';
+  sqlValues += ')';
+
+  final result = await db
+      .executeQuery(QueryParam(query: sqlInto + sqlValues, params: params));
 
   if (result.affectedRows < BigInt.one) {
     return Response.json(
@@ -153,7 +170,8 @@ Future<Response> _onPost(RequestContext context) async {
     await ioSink.close();
     savedBuktiBayarFileName = file.uri.pathSegments.last;
   }
-  sql = 'UPDATE anggota SET ktp = :ktp, foto = :foto, buktibayar = :buktibayar WHERE idanggota = :idanggota';
+  var sql =
+      'UPDATE anggota SET ktp = :ktp, foto = :foto, buktibayar = :buktibayar WHERE idanggota = :idanggota';
   params = {
     'ktp': savedKtpFileName,
     'foto': savedPhotoFileName,
