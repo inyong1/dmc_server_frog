@@ -20,6 +20,9 @@ Future<Response> _onGet(RequestContext context) async {
   final queryParam = context.request.uri.queryParameters;
   final page = asInt(queryParam, 'page', defaultValue: 1);
   final search = asString(queryParam, 'search');
+  final levelAnggota = asString(queryParam, 'level_anggota');
+  final levelWilayah = asString(queryParam, 'level_wilayah');
+  final statusKeaktifan = asString(queryParam, 'statuskeaktifan');
   const limit = 100;
   final offset = (page - 1) * limit;
 
@@ -31,8 +34,23 @@ Future<Response> _onGet(RequestContext context) async {
   sql += ' LEFT JOIN masterkecamatan b ON a.idkecamatan = b.idkecamatan';
   sql += ' LEFT JOIN masterkelurahan c ON a.idkelurahan = c.idkelurahan';
   sql += ' WHERE a.statuskeaktifan > 0 AND a.namaanggota LIKE :search';
+  if (levelAnggota.isNotEmpty) {
+    sql += ' AND a.level = :levelAnggota';
+  }
+  if (levelWilayah.isNotEmpty) {
+    sql += ' AND a.levelwilayah = :levelWilayah';
+  }
+  if (statusKeaktifan.isNotEmpty) {
+    sql += ' AND a.statuskeaktifan = :statusKeaktifan';
+  }
+  final params = {
+    'search': '%$search%',
+    'levelAnggota': levelAnggota,
+    'levelWilayah': levelWilayah,
+    'statusKeaktifan': statusKeaktifan,
+  };
   final result0 = await db.executeQuery(
-    QueryParam(query: sql, params: {'search': '%$search%'}),
+    QueryParam(query: sql, params: params),
   );
 
   if (result0.numOfRows == 0) {
@@ -43,7 +61,7 @@ Future<Response> _onGet(RequestContext context) async {
   sql += ' ORDER BY a.namaanggota ASC LIMIT $limit OFFSET $offset';
 
   final result = await db.executeQuery(
-    QueryParam(query: sql, params: {'search': '%$search%'}),
+    QueryParam(query: sql, params: params),
   );
 
   final uri = context.request.uri;
