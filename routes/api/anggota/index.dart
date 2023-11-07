@@ -23,6 +23,9 @@ Future<Response> _onGet(RequestContext context) async {
   final levelAnggota = asString(queryParam, 'level_anggota');
   final levelWilayah = asString(queryParam, 'level_wilayah');
   final statusKeaktifan = asString(queryParam, 'statuskeaktifan');
+  final idKota = asString(queryParam, 'idkota');
+  final idKecamatan = asString(queryParam, 'idkecamatan');
+  final idKelurahan = asString(queryParam, 'idkelurahan');
   const limit = 100;
   final offset = (page - 1) * limit;
 
@@ -43,11 +46,23 @@ Future<Response> _onGet(RequestContext context) async {
   if (statusKeaktifan.isNotEmpty) {
     sql += ' AND a.statuskeaktifan = :statusKeaktifan';
   }
+  if (idKota.isNotEmpty) {
+    sql += ' AND a.idkabupaten = :idKota';
+  }
+  if (idKecamatan.isNotEmpty) {
+    sql += ' AND a.idkecamatan = :idKecamatan';
+  }
+  if (idKelurahan.isNotEmpty) {
+    sql += ' AND a.idkelurahan = :idKelurahan';
+  }
   final params = {
     'search': '%$search%',
     'levelAnggota': levelAnggota,
     'levelWilayah': levelWilayah,
     'statusKeaktifan': statusKeaktifan,
+    'idKota': idKota,
+    'idKecamatan': idKecamatan,
+    'idKelurahan': idKelurahan,
   };
   final result0 = await db.executeQuery(
     QueryParam(query: sql, params: params),
@@ -58,7 +73,7 @@ Future<Response> _onGet(RequestContext context) async {
   }
   final data = <String, dynamic>{'total_data': result0.numOfRows};
 
-  sql += ' ORDER BY a.namaanggota ASC LIMIT $limit OFFSET $offset';
+  sql += ' ORDER BY a.createdon DESC LIMIT $limit OFFSET $offset';
 
   final result = await db.executeQuery(
     QueryParam(query: sql, params: params),
