@@ -18,13 +18,13 @@ Future<Response> _onGet(RequestContext context) async {
   final db = context.read<AppDatabase>();
 
   var sql =
-      'select a.idkabupaten as idkota, b.kota, a.idkecamatan, b.kecamatan,c.idkelurahan, c.kelurahan, COUNT(a.idkecamatan) as jumlah';
+      'select a.idkabupaten as idkota, b.kota, a.idkecamatan, b.kecamatan,c.idkelurahan, c.kelurahan, COUNT(a.idanggota) as jumlah';
   sql += ' FROM anggota a';
   sql +=
       ' LEFT JOIN masterkecamatan b ON a.idkecamatan = b.idkecamatan AND a.idkabupaten = b.idkota';
   sql +=
       ' LEFT JOIN masterkelurahan c ON a.idkelurahan = c.idkelurahan';
-  sql += ' WHERE a.statuskeaktifan = 1';
+  sql += ' WHERE a.statuskeaktifan > 0';
   sql += ' GROUP BY a.idkabupaten, a.idkecamatan, a.idkelurahan';
   sql += ' ORDER BY b.kota, b.kecamatan ';
 

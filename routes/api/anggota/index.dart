@@ -23,9 +23,11 @@ Future<Response> _onGet(RequestContext context) async {
   final levelAnggota = asString(queryParam, 'level_anggota');
   final levelWilayah = asString(queryParam, 'level_wilayah');
   final statusKeaktifan = asString(queryParam, 'statuskeaktifan');
+  // final statusKeaktifan = "";
   final idKota = asString(queryParam, 'idkota');
   final idKecamatan = asString(queryParam, 'idkecamatan');
   final idKelurahan = asString(queryParam, 'idkelurahan');
+  final awareIdKelurahan = asBool(queryParam, 'awareIdKelurahan');
   const limit = 100;
   final offset = (page - 1) * limit;
 
@@ -45,6 +47,8 @@ Future<Response> _onGet(RequestContext context) async {
   }
   if (statusKeaktifan.isNotEmpty) {
     sql += ' AND a.statuskeaktifan = :statusKeaktifan';
+  }else{
+    sql += ' AND a.statuskeaktifan > 0';
   }
   if (idKota.isNotEmpty) {
     sql += ' AND a.idkabupaten = :idKota';
@@ -54,6 +58,8 @@ Future<Response> _onGet(RequestContext context) async {
   }
   if (idKelurahan.isNotEmpty) {
     sql += ' AND a.idkelurahan = :idKelurahan';
+  }else if (awareIdKelurahan){
+    sql += " AND a.idkelurahan IS NULL";
   }
   final params = {
     'search': '%$search%',
@@ -112,6 +118,10 @@ Future<Response> _onPost(RequestContext context) async {
   final idkelurahan = formData.fields['idkelurahan'] ?? '';
   final hobi = formData.fields['hobi'] ?? '';
   final usaha = formData.fields['usaha'] ?? '';
+  final agama = formData.fields['agama'] ?? '';
+  final pekerjaan = formData.fields['pekerjaan'] ?? '';
+  final nik = formData.fields['nik'] ?? '';
+  final golonganDarah = formData.fields['golongan_darah'] ?? '';
 
   // ignore: omit_local_variable_types
   final List<int>? ktpBytes = await formData.files['ktp']?.readAsBytes();
@@ -133,9 +143,9 @@ Future<Response> _onPost(RequestContext context) async {
   final db = context.read<AppDatabase>();
 
   var sqlInto =
-      'INSERT INTO anggota(barcode,namaanggota,idkabupaten, idkecamatan,tempattanggallahir,level,levelwilayah,jabatan, alamat, ukuranbaju, hp, hobi, usaha';
+      'INSERT INTO anggota(barcode,namaanggota,idkabupaten, idkecamatan,tempattanggallahir,level,levelwilayah,jabatan, alamat, ukuranbaju, hp, hobi, usaha, agama, pekerjaan, nik, golongan_darah';
   var sqlValues =
-      'VALUES(:barcode,:namaanggota,:idkabupaten,:idkecamatan,:tempattanggallahir,:level,:levelwilayah,:jabatan,:alamat,:ukuranbaju, :hp, :hobi, :usaha';
+      'VALUES(:barcode,:namaanggota,:idkabupaten,:idkecamatan,:tempattanggallahir,:level,:levelwilayah,:jabatan,:alamat,:ukuranbaju, :hp, :hobi, :usaha, :agama, :pekerjaan, :nik, :golongan_darah';
   var params = {
     'barcode': barcode,
     'namaanggota': nama,
@@ -150,6 +160,10 @@ Future<Response> _onPost(RequestContext context) async {
     'hp': hp,
     'hobi': hobi,
     'usaha': usaha,
+    'agama': agama,
+    'pekerjaan': pekerjaan,
+    'nik': nik,
+    'golongan_darah': golonganDarah,
   };
   if (idkelurahan.isNotEmpty) {
     sqlInto += ',idkelurahan';

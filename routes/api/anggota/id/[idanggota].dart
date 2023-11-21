@@ -82,6 +82,10 @@ Future<Response> _updateAnggota(
   final idkelurahan = formData.fields['idkelurahan'] ?? '';
   final hobi = formData.fields['hobi'] ?? '';
   final usaha = formData.fields['usaha'] ?? '';
+  final agama = formData.fields['agama'] ?? '';
+  final pekerjaan = formData.fields['pekerjaan'] ?? '';
+  final nik = formData.fields['nik'] ?? '';
+  final golonganDarah = formData.fields['golongan_darah'] ?? '';
 
   // ignore: omit_local_variable_types
   final List<int>? ktpBytes = await formData.files['ktp']?.readAsBytes();
@@ -107,8 +111,8 @@ Future<Response> _updateAnggota(
   sqlInto +=
       ' idkecamatan=:idkecamatan,tempattanggallahir=:tempattanggallahir,level=:level,';
   sqlInto += 'levelwilayah=:levelwilayah,jabatan=:jabatan, alamat=:alamat,';
-  sqlInto +=
-      ' ukuranbaju=:ukuranbaju, hp=:hp, hobi=:hobi, usaha=:usaha,idkelurahan=:idkelurahan';
+  sqlInto += ' ukuranbaju=:ukuranbaju, hp=:hp, hobi=:hobi, usaha=:usaha,';
+  sqlInto += ' idkelurahan=:idkelurahan,pekerjaan=:pekerjaan,agama=:agama, nik=:nik, golongan_darah=:golongan_darah';
   sqlInto += ' WHERE idanggota=:idanggota';
 
   var params = {
@@ -127,6 +131,10 @@ Future<Response> _updateAnggota(
     'usaha': usaha,
     'idanggota': idAnggota,
     'idkelurahan': idkelurahan.isEmpty ? null : idkelurahan,
+    'pekerjaan': pekerjaan,
+    'agama': agama,
+    'nik': nik,
+    'golongan_darah': golonganDarah,
   };
   final result =
       await db.executeQuery(QueryParam(query: sqlInto, params: params));
