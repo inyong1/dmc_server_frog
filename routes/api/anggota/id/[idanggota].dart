@@ -86,6 +86,7 @@ Future<Response> _updateAnggota(
   final pekerjaan = formData.fields['pekerjaan'] ?? '';
   final nik = formData.fields['nik'] ?? '';
   final golonganDarah = formData.fields['golongan_darah'] ?? '';
+  final catatan = formData.fields['catatan'] ?? '';
 
   // ignore: omit_local_variable_types
   final List<int>? ktpBytes = await formData.files['ktp']?.readAsBytes();
@@ -112,7 +113,8 @@ Future<Response> _updateAnggota(
       ' idkecamatan=:idkecamatan,tempattanggallahir=:tempattanggallahir,level=:level,';
   sqlInto += 'levelwilayah=:levelwilayah,jabatan=:jabatan, alamat=:alamat,';
   sqlInto += ' ukuranbaju=:ukuranbaju, hp=:hp, hobi=:hobi, usaha=:usaha,';
-  sqlInto += ' idkelurahan=:idkelurahan,pekerjaan=:pekerjaan,agama=:agama, nik=:nik, golongan_darah=:golongan_darah';
+  sqlInto += ' idkelurahan=:idkelurahan,pekerjaan=:pekerjaan,agama=:agama, nik=:nik, golongan_darah=:golongan_darah,';
+  sqlInto += ' catatan=:catatan';
   sqlInto += ' WHERE idanggota=:idanggota';
 
   var params = {
@@ -135,6 +137,7 @@ Future<Response> _updateAnggota(
     'agama': agama,
     'nik': nik,
     'golongan_darah': golonganDarah,
+    'catatan': catatan,
   };
   final result =
       await db.executeQuery(QueryParam(query: sqlInto, params: params));

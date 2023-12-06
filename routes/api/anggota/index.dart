@@ -47,7 +47,7 @@ Future<Response> _onGet(RequestContext context) async {
   }
   if (statusKeaktifan.isNotEmpty) {
     sql += ' AND a.statuskeaktifan = :statusKeaktifan';
-  }else{
+  } else {
     sql += ' AND a.statuskeaktifan > 0';
   }
   if (idKota.isNotEmpty) {
@@ -58,7 +58,7 @@ Future<Response> _onGet(RequestContext context) async {
   }
   if (idKelurahan.isNotEmpty) {
     sql += ' AND a.idkelurahan = :idKelurahan';
-  }else if (awareIdKelurahan){
+  } else if (awareIdKelurahan) {
     sql += " AND a.idkelurahan IS NULL";
   }
   final params = {
@@ -122,6 +122,7 @@ Future<Response> _onPost(RequestContext context) async {
   final pekerjaan = formData.fields['pekerjaan'] ?? '';
   final nik = formData.fields['nik'] ?? '';
   final golonganDarah = formData.fields['golongan_darah'] ?? '';
+  final catatan = formData.fields['catatan'] ?? '';
 
   // ignore: omit_local_variable_types
   final List<int>? ktpBytes = await formData.files['ktp']?.readAsBytes();
@@ -143,9 +144,9 @@ Future<Response> _onPost(RequestContext context) async {
   final db = context.read<AppDatabase>();
 
   var sqlInto =
-      'INSERT INTO anggota(barcode,namaanggota,idkabupaten, idkecamatan,tempattanggallahir,level,levelwilayah,jabatan, alamat, ukuranbaju, hp, hobi, usaha, agama, pekerjaan, nik, golongan_darah';
+      'INSERT INTO anggota(barcode,namaanggota,idkabupaten, idkecamatan,tempattanggallahir,level,levelwilayah,jabatan, alamat, ukuranbaju, hp, hobi, usaha, agama, pekerjaan, nik, golongan_darah, catatan';
   var sqlValues =
-      'VALUES(:barcode,:namaanggota,:idkabupaten,:idkecamatan,:tempattanggallahir,:level,:levelwilayah,:jabatan,:alamat,:ukuranbaju, :hp, :hobi, :usaha, :agama, :pekerjaan, :nik, :golongan_darah';
+      'VALUES(:barcode,:namaanggota,:idkabupaten,:idkecamatan,:tempattanggallahir,:level,:levelwilayah,:jabatan,:alamat,:ukuranbaju, :hp, :hobi, :usaha, :agama, :pekerjaan, :nik, :golongan_darah, :catatan';
   var params = {
     'barcode': barcode,
     'namaanggota': nama,
@@ -164,6 +165,7 @@ Future<Response> _onPost(RequestContext context) async {
     'pekerjaan': pekerjaan,
     'nik': nik,
     'golongan_darah': golonganDarah,
+    'catatan': catatan,
   };
   if (idkelurahan.isNotEmpty) {
     sqlInto += ',idkelurahan';
